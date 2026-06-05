@@ -1,2 +1,2 @@
 # mal
-Make a Lisp
+[Make a Lisp](https://github.com/kanaka/mal)
