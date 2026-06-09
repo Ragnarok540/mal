@@ -11,8 +11,7 @@ function print_mal(str)
 end
 
 function rep_mal(str)
-    print_mal(eval_mal(read_mal(str)))
-    return str
+    return print_mal(eval_mal(read_mal(str)))
 end
 
 while true do
