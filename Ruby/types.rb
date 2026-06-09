@@ -19,7 +19,7 @@ class MalBool < MalType
 end
 
 class MalString < MalType
-    attr_accessor :STR
+    attr_accessor :STR # val
 
     def initialize(str)
         self.STR = str
