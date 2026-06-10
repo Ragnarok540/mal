@@ -10,7 +10,7 @@ def pr_str(mal)
     end
 
     if mal.kind_of?(MalNumber) then
-        return mal.to_s
+        return mal.val
     end
 end
 

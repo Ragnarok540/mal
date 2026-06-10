@@ -34,6 +34,13 @@ class MalString < MalType
 end
 
 class MalNumber < MalType
+    def initialize(val)
+        self.val = val.to_i
+    end
+
+    def to_i
+        return self.val
+    end
 end
 
 class MalSymbol < MalType
