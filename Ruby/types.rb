@@ -1,60 +1,52 @@
 class MalType
+    attr_accessor :val
+
+    def initialize(val)
+        self.val = val
+    end
+
+    def to_s
+        "#{self.val}"
+    end
 end
 
 class MalNil < MalType
-    attr_accessor :NIL
-
     def initialize()
-        self.NIL = nil
+        self.val = nil
+    end
+
+    def to_s
+        "nil"
     end
 end
 
 class MalBool < MalType
-    attr_accessor :TRUE, :FALSE
+    attr_accessor :t, :f
 
-    def initialize()
-        self.TRUE = true
-        self.FALSE = false
+    def initialize(val)
+        self.t = true
+        self.f = false
+        self.val = val
     end
 end
 
 class MalString < MalType
-    attr_accessor :STR # val
-
-    def initialize(str)
-        self.STR = str
-    end
 end
 
 class MalNumber < MalType
-    attr_accessor :num
-
-    def initialize(number)
-        self.num = number
-    end
-
-    def to_s
-        "#{num}"
-    end
-
 end
 
 class MalSymbol < MalType
-    attr_accessor :sym
-
-    def initialize(symbol)
-        self.sym = symbol
-    end
-
-    def to_s
-        "#{sym}"
-    end
 end
 
-class MalList < MalType
-    attr_accessor :LIST
+class MalArray < MalType
+    attr_accessor :start, :end
+end
 
-    def initialize()
-        self.LIST = Array.new()
+class MalVector < MalArray
+    def initialize(val)
+        self.start = "["
+        self.end = "]"
+        self.val = val
     end
 end

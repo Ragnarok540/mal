@@ -17,7 +17,6 @@ class Reader
     def peek
         return self.tokens[self.position]
     end
-
 end
 
 def read_str(str)
@@ -40,7 +39,7 @@ def read_form(reader)
         return "BIG ERROR"
     end
 
-    if is_list_start(token[0, 1]) then
+    if is_list_start(token) then
         return read_list(reader)
     end
 
@@ -55,13 +54,15 @@ def read_list(reader)
         token = reader.peek
 
         if token == nil then
+            print "unbalanced "
             break
         end
 
-        if is_list_end(token[0, 1]) then
+        if is_list_end(token) then
+            reader.next
             break
         end
-        
+
         result.push(read_form(reader))
     end
 
@@ -89,9 +90,9 @@ def is_number(token)
 end
 
 def is_list_start(token)
-    return token == "("
+    return token[0, 1] == "("
 end
 
 def is_list_end(token)
-    return token == ")"
+    return token[0, 1] == ")"
 end
