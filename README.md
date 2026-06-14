@@ -15,18 +15,19 @@
 ```plantuml
 @startmindmap
 # Step 1: Read and Print
-## Reader Class
+## Reader
 ### Attributes
 #### Tokens
 #### Position
 ### Methods
 #### NEXT
 #### PEEK
-### READ_STR function
-### TOKENIZE function
-### READ_FORM function
-### READ_LIST function
-### READ_ATOM function
+### Functions
+#### READ_STR
+#### TOKENIZE
+#### READ_FORM
+#### READ_LIST
+#### READ_ATOM
 ## Printer
 ### PR_STR function
 ## Data Types
@@ -40,6 +41,5 @@
 ### Keyword
 ## Parentheses matching
 ## Comment support
-
 @endmindmap
 ```
