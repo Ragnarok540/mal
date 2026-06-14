@@ -1,7 +1,8 @@
 # mal
 [Make a Lisp](https://github.com/kanaka/mal)
 
-```
+````markdown
+```plantuml
 @startmindmap
 # Step 0: The REPL
 ## READ function
@@ -11,3 +12,4 @@
 ## Main loop
 @endmindmap
 ```
+````
