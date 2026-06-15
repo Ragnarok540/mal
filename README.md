@@ -43,3 +43,32 @@
 ## Comment support
 @endmindmap
 ```
+
+```plantuml
+@startmindmap
+# Step 2: Eval
+## REPL environment
+### SUM function
+### DIFFERENCE function
+### MULTIPLICATION function
+### DIVISION function
+## EVAL debug function
+## EVAL over Vectors
+## EVAL over Hashmaps
+@endmindmap
+```
+
+```plantuml
+@startmindmap
+# Step 3: Environments
+## Attributes
+### outer
+### data
+## Methods
+### set
+### get
+## Special Symbols
+### def!
+### let*
+@endmindmap
+```
