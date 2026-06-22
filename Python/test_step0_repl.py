@@ -1,6 +1,7 @@
 import unittest
 import step0_repl
 
+optional = True  # Run optional tests?
 
 class Step0TestCase(unittest.TestCase):
 
@@ -46,6 +47,7 @@ class Step0TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    @unittest.skipUnless(optional, "optional")
     def test_non_aphanumeric_optional(self):
         cases = [
             ('#', step0_repl.rep_mal('#')),

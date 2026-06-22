@@ -43,7 +43,7 @@ def read_form(reader)
         return read_list(reader)
     end
 
-    return read_atom(reader) 
+    return read_atom(reader)
 end
 
 def read_list(reader)

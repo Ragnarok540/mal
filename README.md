@@ -1,5 +1,7 @@
 # mal
-[Make a Lisp](https://github.com/kanaka/mal)
+- [Make a Lisp](https://github.com/kanaka/mal)
+- [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language))
+
 
 ```plantuml
 @startmindmap
