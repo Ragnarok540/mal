@@ -1,6 +1,6 @@
 import re
 
-from mal_types import MalNumber, MalSymbol
+from mal_types import MalNumber, MalString, MalSymbol, MalError
 
 class Reader:
     def __init__(self, tokens):
@@ -18,7 +18,10 @@ class Reader:
 def read_str(string):
     tokens = tokenize(string)
     reader = Reader(tokens)
-    return read_form(reader)
+    try:
+        return read_form(reader)
+    except UnbalancedError:
+        return MalError('error: unbalanced')
 
 def tokenize(string):
     reg_exp = r"""[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)"""
@@ -28,8 +31,10 @@ def tokenize(string):
 def read_form(reader):
     token = reader.peek()
 
-    if token is None:
-        return "BIG ERROR"
+    if token == '':
+        return MalError('error: no input')
+
+    # print(token, reader.position, reader.tokens)
 
     if is_list_start(token):
         return read_list(reader)
@@ -44,9 +49,9 @@ def read_list(reader):
     while True:
         token = reader.peek()
 
-        if token is None:
-            print("unbalanced")
-            break
+        # if token is None:
+        #     print("unbalanced")
+        #     break
 
         if is_list_end(token):
             reader.next()
@@ -61,6 +66,12 @@ def read_atom(reader):
 
     if is_number(token):
         return MalNumber(token)
+
+    if is_string(token):
+
+        # check for malformed string
+
+        return MalString(token)
 
     return MalSymbol(token)
 
@@ -78,4 +89,13 @@ def is_list_start(token):
     return token[0] == '('
 
 def is_list_end(token):
-    return token[0] == ')'
+    try:
+        return token[0] == ')'
+    except IndexError as ie:
+        raise UnbalancedError() from ie
+
+class UnbalancedError(Exception):
+    pass
+
+class MalformedString(UnbalancedError):
+    pass

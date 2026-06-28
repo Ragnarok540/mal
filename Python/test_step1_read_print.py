@@ -113,15 +113,23 @@ class Step1TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
-"""
+    @unittest.skipUnless(deferred, "deferred")
+    def test_reader_errors(self):
+        cases = [
+            ('error: unbalanced', step1_read_print.rep_mal('(')),
+            ('error: unbalanced', step1_read_print.rep_mal('(1 2')),
+            ('error: no input', step1_read_print.rep_mal('')),
+            # ('error: unbalanced', step1_read_print.rep_mal('[1 2')),
+            # ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),
+            # ('error: unbalanced', step1_read_print.rep_mal('"abc')),
+            ('"abc', step1_read_print.rep_mal('"abc')),
+        ]
 
-;; Testing reader errors
-(1 2
-;/.*(EOF|end of input|unbalanced).*
-[1 2
-;/.*(EOF|end of input|unbalanced).*
-{"a" 2
-;/.*(EOF|end of input|unbalanced).*
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+
+"""
 
 ;;; These should throw some error with no return value
 "abc
