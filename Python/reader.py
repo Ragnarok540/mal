@@ -30,60 +30,55 @@ def tokenize(string):
 
 def read_form(reader):
     token = reader.peek()
-
     if token == '':
         return MalError('error: no input')
-
-    # print(token, reader.position, reader.tokens)
-
     if is_list_start(token):
         return read_list(reader)
-
+    if is_comment(token):
+        reader.next()
+        read_form(reader)
     return read_atom(reader)
 
 
 def read_list(reader):
     token = reader.next()
     result = []
-
     while True:
         token = reader.peek()
-
-        # if token is None:
-        #     print("unbalanced")
-        #     break
-
         if is_list_end(token):
             reader.next()
             break
-
         result.append(read_form(reader))
-
     return result
 
 def read_atom(reader):
     token = reader.next()
-
     if is_number(token):
         return MalNumber(token)
-
     if is_string(token):
-
-        # check for malformed string
-
+        if is_malformed_string(token):
+            raise UnbalancedError()
         return MalString(token)
-
+    if token[0] == '"':
+        raise UnbalancedError()
     return MalSymbol(token)
 
 def is_string(token):
     reg_exp = r""""(?:(?:[^"\\]|\\.)*")?"""
     pattern = re.compile(reg_exp)
-    return pattern.match(token) is not None
+    matches = pattern.findall(token)
+    return len(matches) == 1
+
+def is_malformed_string(token):
+    return len(token) == 1 or token[-1] != '"'
 
 def is_number(token):
     reg_exp = r"""-?\d+"""
     pattern = re.compile(reg_exp)
     return pattern.match(token) is not None
+
+def is_comment(token):
+    return token[0] == ';'
 
 def is_list_start(token):
     return token[0] == '('
@@ -95,7 +90,4 @@ def is_list_end(token):
         raise UnbalancedError() from ie
 
 class UnbalancedError(Exception):
-    pass
-
-class MalformedString(UnbalancedError):
     pass

@@ -2,7 +2,7 @@ import unittest
 import step1_read_print
 
 deferred = True  # Run deferred tests?
-optional = False  # Run optional tests?
+optional = True  # Run optional tests?
 
 class Step1TestCase(unittest.TestCase):
 
@@ -13,7 +13,6 @@ class Step1TestCase(unittest.TestCase):
             ('7', step1_read_print.rep_mal('  7   ')),
             ('-123', step1_read_print.rep_mal('-123')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -25,7 +24,6 @@ class Step1TestCase(unittest.TestCase):
             ('abc5', step1_read_print.rep_mal('abc5')),
             ('abc-def', step1_read_print.rep_mal('abc-def')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -35,7 +33,6 @@ class Step1TestCase(unittest.TestCase):
             ('-abc', step1_read_print.rep_mal('-abc')),
             ('->>', step1_read_print.rep_mal('->>')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -53,7 +50,6 @@ class Step1TestCase(unittest.TestCase):
             ('(* -3 6)', step1_read_print.rep_mal('(* -3 6)')),
             ('(() ())', step1_read_print.rep_mal('(()())')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -69,7 +65,6 @@ class Step1TestCase(unittest.TestCase):
             ('true', step1_read_print.rep_mal('true')),
             ('false', step1_read_print.rep_mal('false')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -81,8 +76,8 @@ class Step1TestCase(unittest.TestCase):
             ('"abc (with parens)"', step1_read_print.rep_mal('"abc (with parens)"')),
             (r'''"abc\"def"''', step1_read_print.rep_mal(r'''"abc\"def"''')),
             ('""', step1_read_print.rep_mal('""')),
-            ('"\\"', step1_read_print.rep_mal('"\\"')),
-            ('"\\\\\\\\\\\\\\\\\\"', step1_read_print.rep_mal('"\\\\\\\\\\\\\\\\\\"')),
+            (r'''"\\"''', step1_read_print.rep_mal(r'''"\\"''')),
+            (r'''"\\\\\\\\\\\\\\\\\\"''', step1_read_print.rep_mal(r'''"\\\\\\\\\\\\\\\\\\"''')),
             ('"&"', step1_read_print.rep_mal('"&"')),
             ('"\'"', step1_read_print.rep_mal('"\'"')),
             ('"("', step1_read_print.rep_mal('"("')),
@@ -118,167 +113,149 @@ class Step1TestCase(unittest.TestCase):
         cases = [
             ('error: unbalanced', step1_read_print.rep_mal('(')),
             ('error: unbalanced', step1_read_print.rep_mal('(1 2')),
-            ('error: no input', step1_read_print.rep_mal('')),
-            # ('error: unbalanced', step1_read_print.rep_mal('[1 2')),
-            # ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),
-            # ('error: unbalanced', step1_read_print.rep_mal('"abc')),
-            ('"abc', step1_read_print.rep_mal('"abc')),
+            # ('error: unbalanced', step1_read_print.rep_mal('[1 2')),  # vector
+            # ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),  # hash map
+            ('error: unbalanced', step1_read_print.rep_mal('"abc')),
+            ('error: unbalanced', step1_read_print.rep_mal('"')),
+            ('error: unbalanced', step1_read_print.rep_mal(r'''"\"''')),
+            ('error: unbalanced', step1_read_print.rep_mal(r'''"\\\\\\\\\\\\\\\\\\\"''')),
+            ('error: unbalanced', step1_read_print.rep_mal('(1 "abc')),
+            ('error: unbalanced', step1_read_print.rep_mal('(1 "abc"')),
+            ('error: no input', step1_read_print.rep_mal('')),  # custom test
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    """
 
-"""
-
-;;; These should throw some error with no return value
-"abc
-;/.*(EOF|end of input|unbalanced).*
-"
-;/.*(EOF|end of input|unbalanced).*
-"\"
-;/.*(EOF|end of input|unbalanced).*
-"\\\\\\\\\\\\\\\\\\\"
-;/.*(EOF|end of input|unbalanced).*
-(1 "abc
-;/.*(EOF|end of input|unbalanced).*
-(1 "abc"
-;/.*(EOF|end of input|unbalanced).*
-
-;; Testing read of quoting
-'1
-;=>(quote 1)
-'(1 2 3)
-;=>(quote (1 2 3))
-`1
-;=>(quasiquote 1)
-`(1 2 3)
-;=>(quasiquote (1 2 3))
-`(a (b) c)
-;=>(quasiquote (a (b) c))
-~1
-;=>(unquote 1)
-~(1 2 3)
-;=>(unquote (1 2 3))
-`(1 ~a 3)
-;=>(quasiquote (1 (unquote a) 3))
-~@(1 2 3)
-;=>(splice-unquote (1 2 3))
+    ;; Testing read of quoting
+    '1
+    ;=>(quote 1)
+    '(1 2 3)
+    ;=>(quote (1 2 3))
+    `1
+    ;=>(quasiquote 1)
+    `(1 2 3)
+    ;=>(quasiquote (1 2 3))
+    `(a (b) c)
+    ;=>(quasiquote (a (b) c))
+    ~1
+    ;=>(unquote 1)
+    ~(1 2 3)
+    ;=>(unquote (1 2 3))
+    `(1 ~a 3)
+    ;=>(quasiquote (1 (unquote a) 3))
+    ~@(1 2 3)
+    ;=>(splice-unquote (1 2 3))
 
 
-;; Testing keywords
-:kw
-;=>:kw
-(:kw1 :kw2 :kw3)
-;=>(:kw1 :kw2 :kw3)
+    ;; Testing keywords
+    :kw
+    ;=>:kw
+    (:kw1 :kw2 :kw3)
+    ;=>(:kw1 :kw2 :kw3)
 
-;; Testing read of vectors
-[+ 1 2]
-;=>[+ 1 2]
-[]
-;=>[]
-[ ]
-;=>[]
-[[3 4]]
-;=>[[3 4]]
-[+ 1 [+ 2 3]]
-;=>[+ 1 [+ 2 3]]
-  [ +   1   [+   2 3   ]   ]  
-;=>[+ 1 [+ 2 3]]
-([])
-;=>([])
+    ;; Testing read of vectors
+    [+ 1 2]
+    ;=>[+ 1 2]
+    []
+    ;=>[]
+    [ ]
+    ;=>[]
+    [[3 4]]
+    ;=>[[3 4]]
+    [+ 1 [+ 2 3]]
+    ;=>[+ 1 [+ 2 3]]
+    [ +   1   [+   2 3   ]   ]  
+    ;=>[+ 1 [+ 2 3]]
+    ([])
+    ;=>([])
 
-;; Testing read of hash maps
-{}
-;=>{}
-{ }
-;=>{}
-{"abc" 1}
-;=>{"abc" 1}
-{"a" {"b" 2}}
-;=>{"a" {"b" 2}}
-{"a" {"b" {"c" 3}}}
-;=>{"a" {"b" {"c" 3}}}
-{  "a"  {"b"   {  "cde"     3   }  }}
-;=>{"a" {"b" {"cde" 3}}}
-;;; The regexp sorcery here ensures that each key goes with the correct
-;;; value and that each key appears only once.
-{"a1" 1 "a2" 2 "a3" 3}
-;/{"a([1-3])" \1 "a(?!\1)([1-3])" \2 "a(?!\1)(?!\2)([1-3])" \3}
-{  :a  {:b   {  :cde     3   }  }}
-;=>{:a {:b {:cde 3}}}
-{"1" 1}
-;=>{"1" 1}
-({})
-;=>({})
+    ;; Testing read of hash maps
+    {}
+    ;=>{}
+    { }
+    ;=>{}
+    {"abc" 1}
+    ;=>{"abc" 1}
+    {"a" {"b" 2}}
+    ;=>{"a" {"b" 2}}
+    {"a" {"b" {"c" 3}}}
+    ;=>{"a" {"b" {"c" 3}}}
+    {  "a"  {"b"   {  "cde"     3   }  }}
+    ;=>{"a" {"b" {"cde" 3}}}
+    ;;; The regexp sorcery here ensures that each key goes with the correct
+    ;;; value and that each key appears only once.
+    {"a1" 1 "a2" 2 "a3" 3}
+    ;/{"a([1-3])" \1 "a(?!\1)([1-3])" \2 "a(?!\1)(?!\2)([1-3])" \3}
+    {  :a  {:b   {  :cde     3   }  }}
+    ;=>{:a {:b {:cde 3}}}
+    {"1" 1}
+    ;=>{"1" 1}
+    ({})
+    ;=>({})
+    """
 
-;; Testing read of comments
- ;; whole line comment (not an exception)
-1 ; comment after expression
-;=>1
-1; comment after expression
-;=>1
+    @unittest.skipUnless(deferred, "deferred")
+    def test_read_of_comments(self):
+        cases = [
+            ('1', step1_read_print.rep_mal('1 ; comment after expression')),
+            ('1', step1_read_print.rep_mal('1; comment after expression')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
 
-;; Testing read of @/deref
-@a
-;=>(deref a)
+    """
+    ;; Testing read of @/deref
+    @a
+    ;=>(deref a)
 
-;; Colon character inside a symbol
-a:
-;=>a:
+    ;; Colon character inside a symbol
+    a:
+    ;=>a:
 
-;>>> soft=True
-;>>> optional=True
-;;
-;; -------- Optional Functionality --------
+    ;>>> soft=True
+    ;>>> optional=True
+    ;;
+    ;; -------- Optional Functionality --------
 
-;; Testing read of ^/metadata
-^{"a" 1} [1 2 3]
-;=>(with-meta [1 2 3] {"a" 1})
-^2 [1 2 3]
-;=>(with-meta [1 2 3] 2)
+    ;; Testing read of ^/metadata
+    ^{"a" 1} [1 2 3]
+    ;=>(with-meta [1 2 3] {"a" 1})
+    ^2 [1 2 3]
+    ;=>(with-meta [1 2 3] 2)
 
-;; Non alphanumeric characters in strings
-;;; \t is not specified enough to be tested
-"\n"
-;=>"\n"
-"#"
-;=>"#"
-"$"
-;=>"$"
-"%"
-;=>"%"
-"."
-;=>"."
-"\\"
-;=>"\\"
-"|"
-;=>"|"
+    
+    """
 
-;; Non alphanumeric characters in comments
-1;!
-;=>1
-1;"
-;=>1
-1;#
-;=>1
-1;$
-;=>1
-1;%
-;=>1
-1;'
-;=>1
-1;\
-;=>1
-1;\\
-;=>1
-1;\\\
-;=>1
-1;`
-;=>1
-;;; Hopefully less problematic characters
-1; &()*+,-./:;<=>?@[]^_{|}~
-;=>1
+    @unittest.skipUnless(optional, "optional")
+    def test_non_alphanum_chars_strings(self):
+        cases = [
+            (r'''"\n"''', step1_read_print.rep_mal(r'''"\n"''')),
+            ('"#"', step1_read_print.rep_mal('"#"')),
+            ('"$"', step1_read_print.rep_mal('"$"')),
+            ('"%"', step1_read_print.rep_mal('"%"')),
+            ('"."', step1_read_print.rep_mal('"."')),
+            (r'''"\\"''', step1_read_print.rep_mal(r'''"\\"''')),
+            ('"|"', step1_read_print.rep_mal('"|"')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
 
-
-"""
+    @unittest.skipUnless(optional, "optional")
+    def test_non_alphanum_chars_comments(self):
+        cases = [
+            ('1', step1_read_print.rep_mal('1;!')),
+            ('1', step1_read_print.rep_mal('1;"')),
+            ('1', step1_read_print.rep_mal('1;#')),
+            ('1', step1_read_print.rep_mal('1;$')),
+            ('1', step1_read_print.rep_mal('1;%')),
+            ('1', step1_read_print.rep_mal("1;'")),
+            ('1', step1_read_print.rep_mal('1;\\')),
+            ('1', step1_read_print.rep_mal('1;\\\\')),
+            ('1', step1_read_print.rep_mal('1;\\\\\\')),
+            ('1', step1_read_print.rep_mal('1;`')),
+            ('1', step1_read_print.rep_mal('1; &()*+,-./:;<=>?@[]^_{|}~')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
