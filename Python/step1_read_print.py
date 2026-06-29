@@ -24,4 +24,4 @@ if __name__ == "__main__":
 
         print(rep_mal(string_val))
 
-# python3 -m unittest 
+# python3 -m unittest
