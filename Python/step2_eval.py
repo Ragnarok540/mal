@@ -1,6 +1,6 @@
 from printer import pr_str
 from reader import read_str
-from mal_types import MalNumber, MalSymbol, MalError
+from mal_types import MalNumber, MalSymbol, MalVector, MalNil, MalError
 
 def read_mal(string):
     res = read_str(string)
@@ -13,6 +13,10 @@ def eval_mal(mal, repl_env):
                 return repl_env[mal.val]
             except KeyError as ke:
                 raise SymbolNotFound(f'error: symbol "{mal.val}" not found') from ke
+        case MalVector.__name__:
+            new_vector = MalVector()
+            new_vector.val = [eval_mal(e, repl_env) for e in mal.val]
+            return new_vector
         case list.__name__:
             if len(mal) == 0:
                 return mal
@@ -30,7 +34,8 @@ def rep_mal(string):
         '+': lambda a, b: MalNumber(a.val + b.val),
         '-': lambda a, b: MalNumber(a.val - b.val),
         '*': lambda a, b: MalNumber(a.val * b.val),
-        '/': lambda a, b: MalNumber(int(a.val / b.val))
+        '/': lambda a, b: MalNumber(int(a.val / b.val)),
+        'nil': MalNil(),
     }
     try:
         return print_mal(eval_mal(read_mal(string), repl_env))
@@ -49,4 +54,4 @@ if __name__ == "__main__":
 
         print(rep_mal(string_val))
 
-# python3 -m unittest
+# python3 -m unittest -v

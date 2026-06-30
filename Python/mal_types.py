@@ -8,6 +8,9 @@ class MalType():
 class MalSymbol(MalType):
     pass
 
+class MalKeyword(MalSymbol):
+    pass
+
 class MalString(MalSymbol):
     pass
 
@@ -17,3 +20,18 @@ class MalNumber(MalType):
 
 class MalError(MalType):
     pass
+
+class MalContainer(MalType):
+    def __init__(self):
+        self.val = []
+
+class MalVector(MalContainer):
+    def __init__(self):
+        super().__init__()
+
+class MalNil(MalType):
+    def __init__(self):
+        self.val = None
+
+    def __str__(self):
+        return 'nil'

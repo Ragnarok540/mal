@@ -113,7 +113,7 @@ class Step1TestCase(unittest.TestCase):
         cases = [
             ('error: unbalanced', step1_read_print.rep_mal('(')),
             ('error: unbalanced', step1_read_print.rep_mal('(1 2')),
-            # ('error: unbalanced', step1_read_print.rep_mal('[1 2')),  # vector
+            ('error: unbalanced', step1_read_print.rep_mal('[1 2')),
             # ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),  # hash map
             ('error: unbalanced', step1_read_print.rep_mal('"abc')),
             ('error: unbalanced', step1_read_print.rep_mal('"')),
@@ -149,28 +149,32 @@ class Step1TestCase(unittest.TestCase):
     ;=>(splice-unquote (1 2 3))
 
 
-    ;; Testing keywords
-    :kw
-    ;=>:kw
-    (:kw1 :kw2 :kw3)
-    ;=>(:kw1 :kw2 :kw3)
+    """
 
-    ;; Testing read of vectors
-    [+ 1 2]
-    ;=>[+ 1 2]
-    []
-    ;=>[]
-    [ ]
-    ;=>[]
-    [[3 4]]
-    ;=>[[3 4]]
-    [+ 1 [+ 2 3]]
-    ;=>[+ 1 [+ 2 3]]
-    [ +   1   [+   2 3   ]   ]  
-    ;=>[+ 1 [+ 2 3]]
-    ([])
-    ;=>([])
+    @unittest.skipUnless(deferred, "deferred")
+    def test_keywords(self):
+        cases = [
+            (':kw', step1_read_print.rep_mal(':kw')),
+            ('(:kw1 :kw2 :kw3)', step1_read_print.rep_mal('(:kw1 :kw2 :kw3)')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
 
+    @unittest.skipUnless(deferred, "deferred")
+    def test_read_of_vectors(self):
+        cases = [
+            ('[+ 1 2]', step1_read_print.rep_mal('[+ 1 2]')),
+            ('[]', step1_read_print.rep_mal('[]')),
+            ('[]', step1_read_print.rep_mal('[ ]')),
+            ('[[3 4]]', step1_read_print.rep_mal('[[3 4]]')),
+            ('[+ 1 [+ 2 3]]', step1_read_print.rep_mal('[+ 1 [+ 2 3]]')),
+            ('[+ 1 [+ 2 3]]', step1_read_print.rep_mal('  [ +   1   [+   2 3   ]   ]  ')),
+            ('([])', step1_read_print.rep_mal('([])')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    """
     ;; Testing read of hash maps
     {}
     ;=>{}

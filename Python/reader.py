@@ -1,6 +1,6 @@
 import re
 
-from mal_types import MalNumber, MalString, MalSymbol, MalError
+from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalError
 
 class Reader:
     def __init__(self, tokens):
@@ -34,6 +34,8 @@ def read_form(reader):
         return MalError('error: no input')
     if is_list_start(token):
         return read_list(reader)
+    if is_vector_start(token):
+        return read_vector(reader)
     if is_comment(token):
         reader.next()
         read_form(reader)
@@ -51,10 +53,23 @@ def read_list(reader):
         result.append(read_form(reader))
     return result
 
+def read_vector(reader):
+    token = reader.next()
+    result = MalVector()
+    while True:
+        token = reader.peek()
+        if is_vector_end(token):
+            reader.next()
+            break
+        result.val.append(read_form(reader))
+    return result
+
 def read_atom(reader):
     token = reader.next()
     if is_number(token):
         return MalNumber(token)
+    if is_keyword(token):
+        return MalKeyword(token)
     if is_string(token):
         if is_malformed_string(token):
             raise UnbalancedError()
@@ -77,6 +92,9 @@ def is_number(token):
     pattern = re.compile(reg_exp)
     return pattern.match(token) is not None
 
+def is_keyword(token):
+    return token[0] == ':'
+
 def is_comment(token):
     return token[0] == ';'
 
@@ -86,6 +104,15 @@ def is_list_start(token):
 def is_list_end(token):
     try:
         return token[0] == ')'
+    except IndexError as ie:
+        raise UnbalancedError() from ie
+
+def is_vector_start(token):
+    return token[0] == '['
+
+def is_vector_end(token):
+    try:
+        return token[0] == ']'
     except IndexError as ie:
         raise UnbalancedError() from ie
 

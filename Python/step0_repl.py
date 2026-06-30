@@ -22,4 +22,4 @@ if __name__ == "__main__":
 
         print(rep_mal(string))
 
-# python3 -m unittest
+# python3 -m unittest -v
