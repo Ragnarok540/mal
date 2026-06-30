@@ -29,6 +29,10 @@ class MalVector(MalContainer):
     def __init__(self):
         super().__init__()
 
+class MalHashMap(MalContainer):
+    def __init__(self):
+        super().__init__()
+
 class MalNil(MalType):
     def __init__(self):
         self.val = None

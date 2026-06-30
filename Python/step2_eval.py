@@ -1,6 +1,6 @@
 from printer import pr_str
 from reader import read_str
-from mal_types import MalNumber, MalSymbol, MalVector, MalNil, MalError
+from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError
 
 def read_mal(string):
     res = read_str(string)
@@ -17,6 +17,10 @@ def eval_mal(mal, repl_env):
             new_vector = MalVector()
             new_vector.val = [eval_mal(e, repl_env) for e in mal.val]
             return new_vector
+        case MalHashMap.__name__:
+            new_hashmap = MalHashMap()
+            new_hashmap.val = [eval_mal(e, repl_env) for e in mal.val]
+            return new_hashmap
         case list.__name__:
             if len(mal) == 0:
                 return mal

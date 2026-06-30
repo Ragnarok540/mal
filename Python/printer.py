@@ -1,4 +1,4 @@
-from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalError
+from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalHashMap, MalError
 
 def pr_str(mal):
     match type(mal).__name__:
@@ -8,6 +8,9 @@ def pr_str(mal):
         case MalVector.__name__:
             res = map(pr_str, mal.val)
             return '[' + ' '.join(res) + ']'
+        case MalHashMap.__name__:
+            res = map(pr_str, mal.val)
+            return '{' + ' '.join(res) + '}'
         case MalNumber.__name__:
             return str(mal.val)
         case MalString.__name__:

@@ -1,6 +1,6 @@
 import re
 
-from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalError
+from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError
 
 class Reader:
     def __init__(self, tokens):
@@ -36,6 +36,8 @@ def read_form(reader):
         return read_list(reader)
     if is_vector_start(token):
         return read_vector(reader)
+    if is_hashmap_start(token):
+        return read_hashmap(reader)
     if is_comment(token):
         reader.next()
         read_form(reader)
@@ -59,6 +61,17 @@ def read_vector(reader):
     while True:
         token = reader.peek()
         if is_vector_end(token):
+            reader.next()
+            break
+        result.val.append(read_form(reader))
+    return result
+
+def read_hashmap(reader):
+    token = reader.next()
+    result = MalHashMap()
+    while True:
+        token = reader.peek()
+        if is_hashmap_end(token):
             reader.next()
             break
         result.val.append(read_form(reader))
@@ -116,5 +129,17 @@ def is_vector_end(token):
     except IndexError as ie:
         raise UnbalancedError() from ie
 
+def is_hashmap_start(token):
+    return token[0] == '{'
+
+def is_hashmap_end(token):
+    try:
+        return token[0] == '}'
+    except IndexError as ie:
+        raise UnbalancedError() from ie
+
 class UnbalancedError(Exception):
     pass
+
+
+print(tokenize('{"a" 1}'))

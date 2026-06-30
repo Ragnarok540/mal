@@ -114,7 +114,7 @@ class Step1TestCase(unittest.TestCase):
             ('error: unbalanced', step1_read_print.rep_mal('(')),
             ('error: unbalanced', step1_read_print.rep_mal('(1 2')),
             ('error: unbalanced', step1_read_print.rep_mal('[1 2')),
-            # ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),  # hash map
+            ('error: unbalanced', step1_read_print.rep_mal('{"a" 2')),
             ('error: unbalanced', step1_read_print.rep_mal('"abc')),
             ('error: unbalanced', step1_read_print.rep_mal('"')),
             ('error: unbalanced', step1_read_print.rep_mal(r'''"\"''')),
@@ -174,31 +174,22 @@ class Step1TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
-    """
-    ;; Testing read of hash maps
-    {}
-    ;=>{}
-    { }
-    ;=>{}
-    {"abc" 1}
-    ;=>{"abc" 1}
-    {"a" {"b" 2}}
-    ;=>{"a" {"b" 2}}
-    {"a" {"b" {"c" 3}}}
-    ;=>{"a" {"b" {"c" 3}}}
-    {  "a"  {"b"   {  "cde"     3   }  }}
-    ;=>{"a" {"b" {"cde" 3}}}
-    ;;; The regexp sorcery here ensures that each key goes with the correct
-    ;;; value and that each key appears only once.
-    {"a1" 1 "a2" 2 "a3" 3}
-    ;/{"a([1-3])" \1 "a(?!\1)([1-3])" \2 "a(?!\1)(?!\2)([1-3])" \3}
-    {  :a  {:b   {  :cde     3   }  }}
-    ;=>{:a {:b {:cde 3}}}
-    {"1" 1}
-    ;=>{"1" 1}
-    ({})
-    ;=>({})
-    """
+    @unittest.skipUnless(deferred, "deferred")
+    def test_read_of_hashmaps(self):
+        cases = [
+            ('{}', step1_read_print.rep_mal('{}')),
+            ('{}', step1_read_print.rep_mal('{ }')),
+            ('{"abc" 1}', step1_read_print.rep_mal('{"abc" 1}')),
+            ('{"a" {"b" 2}}', step1_read_print.rep_mal('{"a" {"b" 2}}')),
+            ('{"a" {"b" {"c" 3}}}', step1_read_print.rep_mal('{"a" {"b" {"c" 3}}}')),
+            ('{"a" {"b" {"cde" 3}}}', step1_read_print.rep_mal(' {  "a"  {"b"   {  "cde"     3   }  }}   ')),
+            ('{"a1" 1 "a2" 2 "a3" 3}', step1_read_print.rep_mal('{"a1" 1 "a2" 2 "a3" 3}')),
+            ('{:a {:b {:cde 3}}}', step1_read_print.rep_mal('{  :a  {:b   {  :cde     3   }  }}')),
+            ('{"1" 1}', step1_read_print.rep_mal('{"1" 1}')),
+            ('({})', step1_read_print.rep_mal('({})')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
 
     @unittest.skipUnless(deferred, "deferred")
     def test_read_of_comments(self):
