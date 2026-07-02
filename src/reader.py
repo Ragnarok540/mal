@@ -140,6 +140,3 @@ def is_hashmap_end(token):
 
 class UnbalancedError(Exception):
     pass
-
-
-print(tokenize('{"a" 1}'))
