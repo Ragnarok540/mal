@@ -3,6 +3,12 @@ from reader import read_str
 from env import Env
 from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError
 
+envi = Env()
+envi.set('+', lambda a, b: MalNumber(a.val + b.val))
+envi.set('-', lambda a, b: MalNumber(a.val - b.val))
+envi.set('*', lambda a, b: MalNumber(a.val * b.val))
+envi.set('/', lambda a, b: MalNumber(int(a.val / b.val)))
+envi.set('nil', MalNil())
 
 def read_mal(string):
     res = read_str(string)
@@ -11,10 +17,10 @@ def read_mal(string):
 def eval_mal(mal, env):
     match type(mal).__name__:
         case MalSymbol.__name__:
-            try:
-                return env.get(mal.val)
-            except KeyError as ke:
-                raise SymbolNotFound(f'error: symbol "{mal.val}" not found') from ke
+            res = env.get(mal.val)
+            if not res:
+                raise SymbolNotFound(f'error: symbol "{mal.val}" not found')
+            return res
         case MalVector.__name__:
             new_vector = MalVector()
             new_vector.val = [eval_mal(e, env) for e in mal.val]
@@ -40,9 +46,9 @@ def eval_mal(mal, env):
 def print_mal(string):
     return pr_str(string)
 
-def rep_mal(string, env):
+def rep_mal(string):
     try:
-        return print_mal(eval_mal(read_mal(string), env))
+        return print_mal(eval_mal(read_mal(string), envi))
     except SymbolNotFound as snf:
         return print_mal(MalError(snf))
 
@@ -50,20 +56,13 @@ class SymbolNotFound(Exception):
     pass
 
 if __name__ == "__main__":
-    envi = Env()
-    envi.set('+', lambda a, b: MalNumber(a.val + b.val))
-    envi.set('-', lambda a, b: MalNumber(a.val - b.val))
-    envi.set('*', lambda a, b: MalNumber(a.val * b.val))
-    envi.set('/', lambda a, b: MalNumber(int(a.val / b.val)))
-    envi.set('nil', MalNil())
-
     while True:
         try:
             string_val = input('user> ')
         except EOFError:
             break
 
-        print(rep_mal(string_val, envi))
+        print(rep_mal(string_val))
         print(envi.data.keys()) # debug
 
 # python3 -m unittest -v
