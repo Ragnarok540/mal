@@ -1,7 +1,7 @@
 from printer import pr_str
 from reader import read_str
 from env import Env
-from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError
+from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError, as_pairs
 
 envi = Env()
 envi.set('+', lambda a, b: MalNumber(a.val + b.val))
@@ -36,7 +36,10 @@ def eval_mal(mal, env):
                 case 'def!':
                     return env.set(mal[1].val, eval_mal(mal[2], env))
                 case 'let*':
-                    pass
+                    let_env = Env(env)
+                    for k, v in as_pairs(mal[1]):
+                        let_env.set(k.val, eval_mal(v, let_env))
+                    return eval_mal(mal[2], let_env)
             f = eval_mal(mal[0], env)
             args = mal[1:]
             return f(*[eval_mal(a, env) for a in args])

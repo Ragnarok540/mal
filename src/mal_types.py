@@ -29,6 +29,9 @@ class MalVector(MalContainer):
     def __init__(self):
         super().__init__()
 
+    def __iter__(self):
+        return iter(self.val)
+
 class MalHashMap(MalContainer):
     def __init__(self):
         super().__init__()
@@ -39,3 +42,8 @@ class MalNil(MalType):
 
     def __str__(self):
         return 'nil'
+
+def as_pairs(iterable):
+    """ k0, v0, k1, v1 ...  ->  (k0, v0), (k1, v1) ... """
+    it = iter(iterable)
+    return zip(it, it)

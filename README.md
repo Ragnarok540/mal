@@ -74,3 +74,24 @@
 ### let*
 @endmindmap
 ```
+
+```plantuml
+@startmindmap
+# Step 4: If Fn Do 
+## Env
+### binds
+### exprs
+## Special Symbols
+### if
+### fn*
+### do
+## Core
+### prn
+### list
+### list?
+### empty?
+### count
+### =
+### <, <=, > and >=
+@endmindmap
+```
