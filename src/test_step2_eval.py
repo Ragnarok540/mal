@@ -52,3 +52,14 @@ class Step2TestCase(unittest.TestCase):
         ]
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_booleans(self):
+        cases = [
+            ('error: symbol "False" not found', step2_eval.rep_mal('False')),
+            ('error: symbol "True" not found', step2_eval.rep_mal('True')),
+            ('false', step2_eval.rep_mal('false')),
+            ('true', step2_eval.rep_mal('true')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
