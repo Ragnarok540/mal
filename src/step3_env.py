@@ -15,6 +15,9 @@ def read_mal(string):
     return res
 
 def eval_mal(mal, env):
+    debug = env.get('DEBUG-EVAL')
+    if debug and str(debug) not in ['nil', 'false']:
+        print(f'EVAL: {pr_str(mal)}')
     match type(mal).__name__:
         case MalSymbol.__name__:
             res = env.get(mal.val)
@@ -66,6 +69,5 @@ if __name__ == "__main__":
             break
 
         print(rep_mal(string_val))
-        print(envi.data.keys()) # debug
 
 # python3 -m unittest -v

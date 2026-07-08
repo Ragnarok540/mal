@@ -18,6 +18,13 @@ class MalNumber(MalType):
     def __init__(self, val):
         super().__init__(int(val))
 
+class MalBool(MalSymbol):
+    def __init__(self, val):
+        super().__init__(bool(val))
+
+    def __str__(self):
+        return str(self.val).lower()
+
 class MalError(MalType):
     pass
 

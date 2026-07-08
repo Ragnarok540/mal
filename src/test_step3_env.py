@@ -98,26 +98,16 @@ class Step3TestCase(unittest.TestCase):
         observed = step3_env.rep_mal('(let* (x 2 x 3) x)')
         self.assertEqual(expected, observed)
 
-    """
-;; -------- Optional Functionality --------
-
-;; Check DEBUG-EVAL
-(let* (DEBUG-EVAL false) (- 3 1))
-;=>2
-(let* (DEBUG-EVAL nil) (- 3 1))
-;=>2
-;;; Some implementations avoid a recursive EVAL when the first element
-;;; is a symbol or when map(EVAL, list) encounters a number.
-(let* (a 3 b 2 DEBUG-EVAL true) (- a b))
-;/EVAL: \(- a b\).*\n1
-;; Check the readably pretty-printing option
-(let* (DEBUG-EVAL 1) "a")
-;/EVAL: "a".*\n"a"
-;; Usually false values
-(let* (a 3 DEBUG-EVAL ()) a)
-;/EVAL: a.*\n3
-(let* (a 3 DEBUG-EVAL 0) a)
-;/EVAL: a.*\n3
-(let* (a 3 DEBUG-EVAL "") a)
-;/EVAL: a.*\n3
-    """
+    @unittest.skipUnless(optional, "optional")
+    def test_debug_eval(self):
+        cases = [
+            ('2', step3_env.rep_mal('(let* (DEBUG-EVAL false) (- 3 1))')),
+            ('2', step3_env.rep_mal('(let* (DEBUG-EVAL nil) (- 3 1))')),
+            ('1', step3_env.rep_mal('(let* (a 3 b 2 DEBUG-EVAL true) (- a b))')),
+            ('"a"', step3_env.rep_mal('(let* (DEBUG-EVAL 1) "a")')),
+            ('3', step3_env.rep_mal('(let* (a 3 DEBUG-EVAL ()) a)')),
+            ('3', step3_env.rep_mal('(let* (a 3 DEBUG-EVAL 0) a)')),
+            ('3', step3_env.rep_mal('(let* (a 3 DEBUG-EVAL "") a)')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])

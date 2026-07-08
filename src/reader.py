@@ -1,6 +1,6 @@
 import re
 
-from mal_types import MalNumber, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError
+from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError
 
 class Reader:
     def __init__(self, tokens):
@@ -83,6 +83,10 @@ def read_atom(reader):
         return MalNumber(token)
     if is_keyword(token):
         return MalKeyword(token)
+    if token == 'true':
+        return MalBool(True)
+    if token == 'false':
+        return MalBool(False)
     if is_string(token):
         if is_malformed_string(token):
             raise UnbalancedError()
