@@ -22,6 +22,18 @@ class Step4TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    def test_fn_form(self):
+        cases = [
+            ('3', step4_if_fn_do.rep_mal('(+ 1 2)')),
+            ('7', step4_if_fn_do.rep_mal('((fn* (a b) (+ b a)) 3 4)')),
+            ('4', step4_if_fn_do.rep_mal('((fn* () 4))')),
+            ('()', step4_if_fn_do.rep_mal('((fn* () ()))')),
+            ('8', step4_if_fn_do.rep_mal('((fn* (f x) (f x)) (fn* (a) (+ 1 a)) 7)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
     # @unittest.skipUnless(deferred, "deferred")
     # def test_let_vector_bindings(self):
     #     cases = [
@@ -38,6 +50,29 @@ class Step4TestCase(unittest.TestCase):
     #     self.assertEqual(expected, observed)
 
     """
+
+    ;; Testing closures
+    ( ( (fn* (a) (fn* (b) (+ a b))) 5) 7)
+    ;=>12
+
+    (def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))
+    (def! plus5 (gen-plus5))
+    (plus5 7)
+    ;=>12
+
+    (def! gen-plusX (fn* (x) (fn* (b) (+ x b))))
+    (def! plus7 (gen-plusX 7))
+    (plus7 8)
+    ;=>15
+
+    (let* [b 0 f (fn* [] b)] (let* [b 1] (f)))
+    ;=>0
+
+    ((let* [b 0] (fn* [] b)))
+    ;=>0
+
+    
+        
     ;; Testing 1-way if form
     (if false (+ 1 7))
     ;=>nil
@@ -72,10 +107,6 @@ class Step4TestCase(unittest.TestCase):
     ;=>78
     (if (>= (count (list 1 2 3)) 3) 89 78)
     ;=>89
-
-
-
-
 
     ;; Testing basic conditionals
     (= 2 1)
@@ -191,41 +222,7 @@ class Step4TestCase(unittest.TestCase):
     ;=>false
     (= (list) nil)
     ;=>false
-    
 
-    ;; Testing builtin and user defined functions
-    (+ 1 2)
-    ;=>3
-    ( (fn* (a b) (+ b a)) 3 4)
-    ;=>7
-    ( (fn* () 4) )
-    ;=>4
-    ( (fn* () ()) )
-    ;=>()
-
-    ( (fn* (f x) (f x)) (fn* (a) (+ 1 a)) 7)
-    ;=>8
-
-
-    ;; Testing closures
-    ( ( (fn* (a) (fn* (b) (+ a b))) 5) 7)
-    ;=>12
-
-    (def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))
-    (def! plus5 (gen-plus5))
-    (plus5 7)
-    ;=>12
-
-    (def! gen-plusX (fn* (x) (fn* (b) (+ x b))))
-    (def! plus7 (gen-plusX 7))
-    (plus7 8)
-    ;=>15
-
-    (let* [b 0 f (fn* [] b)] (let* [b 1] (f)))
-    ;=>0
-
-    ((let* [b 0] (fn* [] b)))
-    ;=>0
 
     ;; Testing do form
     (do (prn 101))

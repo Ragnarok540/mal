@@ -127,7 +127,7 @@ class Step1TestCase(unittest.TestCase):
             self.assertEqual(cas[0], cas[1])
 
     """
-
+    ;; deferred
     ;; Testing read of quoting
     '1
     ;=>(quote 1)
@@ -201,6 +201,7 @@ class Step1TestCase(unittest.TestCase):
             self.assertEqual(cas[0], cas[1])
 
     """
+    ;; deferred
     ;; Testing read of @/deref
     @a
     ;=>(deref a)

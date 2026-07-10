@@ -39,7 +39,7 @@ def eval_mal(mal, env):
                 case 'def!':
                     return env.set(mal[1].val, eval_mal(mal[2], env))
                 case 'let*':
-                    let_env = Env(env)
+                    let_env = Env(outer=env)
                     for k, v in as_pairs(mal[1]):
                         let_env.set(k.val, eval_mal(v, let_env))
                     return eval_mal(mal[2], let_env)
@@ -48,6 +48,11 @@ def eval_mal(mal, env):
                     if str(parameter) not in ['nil', 'false']:
                         return eval_mal(mal[2], env)
                     return eval_mal(mal[3], env)
+                case 'fn*':
+                    def fn(*args):
+                        fn_env = Env(outer=env, binds=mal[1], exprs=args)
+                        return eval_mal(mal[2], fn_env)
+                    return fn
             f = eval_mal(mal[0], env)
             args = mal[1:]
             return f(*[eval_mal(a, env) for a in args])
@@ -72,7 +77,6 @@ if __name__ == "__main__":
             string_val = input('user> ')
         except EOFError:
             break
-
         print(rep_mal(string_val))
 
 # python3 -m unittest -v
