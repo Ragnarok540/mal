@@ -1,3 +1,5 @@
+from typing import Callable
+
 from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalHashMap, MalError
 
 def escape(s):
@@ -31,3 +33,5 @@ def pr_str(mal, print_readably=False):
             return str(mal)
         case MalError.__name__:
             return str(mal.val)
+        case 'function':
+            return '#<function>'

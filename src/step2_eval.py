@@ -55,7 +55,6 @@ if __name__ == "__main__":
             string_val = input('user> ')
         except EOFError:
             break
-
         print(rep_mal(string_val))
 
 # python3 -m unittest -v

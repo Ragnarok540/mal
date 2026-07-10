@@ -49,105 +49,51 @@ class Step4TestCase(unittest.TestCase):
     #     observed = step3_env.rep_mal('(let* (x 2 x 3) x)')
     #     self.assertEqual(expected, observed)
 
+    def test_closures(self):
+        cases = [
+            ('12', step4_if_fn_do.rep_mal('(((fn* (a) (fn* (b) (+ a b))) 5) 7)')),
+            ('#<function>', step4_if_fn_do.rep_mal('(def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))')),
+            ('#<function>', step4_if_fn_do.rep_mal('(def! plus5 (gen-plus5))')),
+            ('12', step4_if_fn_do.rep_mal('(plus5 7)')),
+            ('#<function>', step4_if_fn_do.rep_mal('(def! gen-plusX (fn* (x) (fn* (b) (+ x b))))')),
+            ('#<function>', step4_if_fn_do.rep_mal('(def! plus7 (gen-plusX 7))')),
+            ('15', step4_if_fn_do.rep_mal('(plus7 8)')),
+            ('0', step4_if_fn_do.rep_mal('(let* [b 0 f (fn* [] b)] (let* [b 1] (f)))')),
+            ('0', step4_if_fn_do.rep_mal('((let* [b 0] (fn* [] b)))')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_conditionals(self):
+        cases = [
+            ('false', step4_if_fn_do.rep_mal('(= 2 1)')),
+            ('true', step4_if_fn_do.rep_mal('(= 1 1)')),
+            ('false', step4_if_fn_do.rep_mal('(= 1 2)')),
+            ('false', step4_if_fn_do.rep_mal('(= 1 (+ 1 1))')),
+            ('true', step4_if_fn_do.rep_mal('(= 2 (+ 1 1))')),
+
+            ('true', step4_if_fn_do.rep_mal('(> 2 1)')),
+            ('false', step4_if_fn_do.rep_mal('(> 1 1)')),
+            ('false', step4_if_fn_do.rep_mal('(> 1 2)')),
+
+            ('true', step4_if_fn_do.rep_mal('(>= 2 1)')),
+            ('true', step4_if_fn_do.rep_mal('(>= 1 1)')),
+            ('false', step4_if_fn_do.rep_mal('(>= 1 2)')),
+
+            ('false', step4_if_fn_do.rep_mal('(< 2 1)')),
+            ('false', step4_if_fn_do.rep_mal('(< 1 1)')),
+            ('true', step4_if_fn_do.rep_mal('(< 1 2)')),
+
+            ('false', step4_if_fn_do.rep_mal('(<= 2 1)')),
+            ('true', step4_if_fn_do.rep_mal('(<= 1 1)')),
+            ('true', step4_if_fn_do.rep_mal('(<= 1 2)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
     """
-
-    ;; Testing closures
-    ( ( (fn* (a) (fn* (b) (+ a b))) 5) 7)
-    ;=>12
-
-    (def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))
-    (def! plus5 (gen-plus5))
-    (plus5 7)
-    ;=>12
-
-    (def! gen-plusX (fn* (x) (fn* (b) (+ x b))))
-    (def! plus7 (gen-plusX 7))
-    (plus7 8)
-    ;=>15
-
-    (let* [b 0 f (fn* [] b)] (let* [b 1] (f)))
-    ;=>0
-
-    ((let* [b 0] (fn* [] b)))
-    ;=>0
-
-    
-        
-    ;; Testing 1-way if form
-    (if false (+ 1 7))
-    ;=>nil
-    (if nil 8)
-    ;=>nil
-    (if nil 8 7)
-    ;=>7
-    (if true (+ 1 7))
-    ;=>8
-
-
-    ;; Testing list functions
-    (list)
-    ;=>()
-    (list? (list))
-    ;=>true
-    (list? nil)
-    ;=>false
-    (empty? (list))
-    ;=>true
-    (empty? (list 1))
-    ;=>false
-    (list 1 2 3)
-    ;=>(1 2 3)
-    (count (list 1 2 3))
-    ;=>3
-    (count (list))
-    ;=>0
-    (count nil)
-    ;=>0
-    (if (> (count (list 1 2 3)) 3) 89 78)
-    ;=>78
-    (if (>= (count (list 1 2 3)) 3) 89 78)
-    ;=>89
-
-    ;; Testing basic conditionals
-    (= 2 1)
-    ;=>false
-    (= 1 1)
-    ;=>true
-    (= 1 2)
-    ;=>false
-    (= 1 (+ 1 1))
-    ;=>false
-    (= 2 (+ 1 1))
-    ;=>true
-
-    (> 2 1)
-    ;=>true
-    (> 1 1)
-    ;=>false
-    (> 1 2)
-    ;=>false
-
-    (>= 2 1)
-    ;=>true
-    (>= 1 1)
-    ;=>true
-    (>= 1 2)
-    ;=>false
-
-    (< 2 1)
-    ;=>false
-    (< 1 1)
-    ;=>false
-    (< 1 2)
-    ;=>true
-
-    (<= 2 1)
-    ;=>false
-    (<= 1 1)
-    ;=>true
-    (<= 1 2)
-    ;=>true
-
 
     ;; Testing equality and the representation of nil false true
     (= 1 1)
@@ -222,6 +168,41 @@ class Step4TestCase(unittest.TestCase):
     ;=>false
     (= (list) nil)
     ;=>false
+
+    ;; Testing 1-way if form
+    (if false (+ 1 7))
+    ;=>nil
+    (if nil 8)
+    ;=>nil
+    (if nil 8 7)
+    ;=>7
+    (if true (+ 1 7))
+    ;=>8
+
+
+    ;; Testing list functions
+    (list)
+    ;=>()
+    (list? (list))
+    ;=>true
+    (list? nil)
+    ;=>false
+    (empty? (list))
+    ;=>true
+    (empty? (list 1))
+    ;=>false
+    (list 1 2 3)
+    ;=>(1 2 3)
+    (count (list 1 2 3))
+    ;=>3
+    (count (list))
+    ;=>0
+    (count nil)
+    ;=>0
+    (if (> (count (list 1 2 3)) 3) 89 78)
+    ;=>78
+    (if (>= (count (list 1 2 3)) 3) 89 78)
+    ;=>89
 
 
     ;; Testing do form

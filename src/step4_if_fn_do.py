@@ -1,14 +1,13 @@
 from printer import pr_str
 from reader import read_str
 from env import Env
-from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError, as_pairs
+from core import ns
+from mal_types import MalSymbol, MalVector, MalHashMap, MalError, as_pairs
 
 envi = Env()
-envi.set('+', lambda a, b: MalNumber(a.val + b.val))
-envi.set('-', lambda a, b: MalNumber(a.val - b.val))
-envi.set('*', lambda a, b: MalNumber(a.val * b.val))
-envi.set('/', lambda a, b: MalNumber(int(a.val / b.val)))
-envi.set('nil', MalNil())
+
+for k, v in ns.items():
+    envi.set(k, v)
 
 def read_mal(string):
     res = read_str(string)
