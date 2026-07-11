@@ -6,8 +6,8 @@ from mal_types import MalSymbol, MalVector, MalHashMap, MalError, as_pairs
 
 envi = Env()
 
-for k, v in ns.items():
-    envi.set(k, v)
+for key, value in ns.items():
+    envi.set(key, value)
 
 def read_mal(string):
     res = read_str(string)

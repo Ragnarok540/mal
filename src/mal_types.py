@@ -5,6 +5,9 @@ class MalType():
     def __str__(self):
         return str(self.val)
 
+    def __eq__(self, other):
+        return self.val == other.val
+
 class MalSymbol(MalType):
     pass
 

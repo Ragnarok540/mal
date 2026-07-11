@@ -93,82 +93,107 @@ class Step4TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    def test_recursive_sumdown(self):
+        cases = [
+            ('#<function>', step4_if_fn_do.rep_mal('(def! sumdown (fn* (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0)))')),
+            ('1', step4_if_fn_do.rep_mal('(sumdown 1)')),
+            ('3', step4_if_fn_do.rep_mal('(sumdown 2)')),
+            ('21', step4_if_fn_do.rep_mal('(sumdown 6)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_recursive_fibonacci(self):
+        cases = [
+            ('#<function>', step4_if_fn_do.rep_mal('(def! fib (fn* (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2)))))))')),
+            ('1', step4_if_fn_do.rep_mal('(fib 1)')),
+            ('2', step4_if_fn_do.rep_mal('(fib 2)')),
+            ('5', step4_if_fn_do.rep_mal('(fib 4)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_recursive_fn_env(self):
+        cases = [
+            ('3', step4_if_fn_do.rep_mal('(let* (f (fn* () x) x 3) (f))')),
+            ('nil', step4_if_fn_do.rep_mal('(let* (cst (fn* (n) (if (= n 0) nil (cst (- n 1))))) (cst 1))')),
+            ('0', step4_if_fn_do.rep_mal('(let* (f (fn* (n) (if (= n 0) 0 (g (- n 1)))) g (fn* (n) (f n))) (f 2))')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_list_fn(self):
+        cases = [
+            ('()', step4_if_fn_do.rep_mal('(list)')),
+            ('true', step4_if_fn_do.rep_mal('(list? (list))')),
+            ('false', step4_if_fn_do.rep_mal('(list? nil)')),
+            ('true', step4_if_fn_do.rep_mal('(empty? (list))')),
+            ('false', step4_if_fn_do.rep_mal('(empty? (list 1))')),
+            ('(1 2 3)', step4_if_fn_do.rep_mal('(list 1 2 3)')),
+            ('3', step4_if_fn_do.rep_mal('(count (list 1 2 3))')),
+            ('0', step4_if_fn_do.rep_mal('(count (list))')),
+            ('0', step4_if_fn_do.rep_mal('(count nil)')),
+            ('78', step4_if_fn_do.rep_mal('(if (> (count (list 1 2 3)) 3) 89 78)')),
+            ('89', step4_if_fn_do.rep_mal('(if (>= (count (list 1 2 3)) 3) 89 78)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_equality_nil_bool(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(= 1 1)')),
+            ('true', step4_if_fn_do.rep_mal('(= 0 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= 1 0)')),
+
+            ('true', step4_if_fn_do.rep_mal('(= nil nil)')),
+            ('false', step4_if_fn_do.rep_mal('(= nil false)')),
+            ('false', step4_if_fn_do.rep_mal('(= nil true)')),
+            ('false', step4_if_fn_do.rep_mal('(= nil 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= nil 1)')),
+            ('false', step4_if_fn_do.rep_mal('(= nil "")')),
+            ('false', step4_if_fn_do.rep_mal('(= nil ())')),
+            ('false', step4_if_fn_do.rep_mal('(= nil [])')),
+            ('false', step4_if_fn_do.rep_mal('(= nil {})')),
+
+            ('false', step4_if_fn_do.rep_mal('(= false nil)')),
+            ('true', step4_if_fn_do.rep_mal('(= false false)')),
+            ('false', step4_if_fn_do.rep_mal('(= false true)')),
+            ('false', step4_if_fn_do.rep_mal('(= false 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= false 1)')),
+            ('false', step4_if_fn_do.rep_mal('(= false "")')),
+            ('false', step4_if_fn_do.rep_mal('(= false ())')),
+            ('false', step4_if_fn_do.rep_mal('(= false [])')),
+            ('false', step4_if_fn_do.rep_mal('(= false {})')),
+
+            ('false', step4_if_fn_do.rep_mal('(= true nil)')),
+            ('false', step4_if_fn_do.rep_mal('(= true false)')),
+            ('true', step4_if_fn_do.rep_mal('(= true true)')),
+            ('false', step4_if_fn_do.rep_mal('(= true 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= true 1)')),
+            ('false', step4_if_fn_do.rep_mal('(= true "")')),
+            ('false', step4_if_fn_do.rep_mal('(= true ())')),
+            ('false', step4_if_fn_do.rep_mal('(= true [])')),
+            ('false', step4_if_fn_do.rep_mal('(= true {})')),
+
+            ('true', step4_if_fn_do.rep_mal('(= (list) (list))')),
+            ('true', step4_if_fn_do.rep_mal('(= (list) ())')),
+            ('true', step4_if_fn_do.rep_mal('(= (list 1 2) (list 1 2))')),
+            ('false', step4_if_fn_do.rep_mal('(= (list 1) (list))')),
+            ('false', step4_if_fn_do.rep_mal('(= (list) (list 1))')),
+            ('false', step4_if_fn_do.rep_mal('(= 0 (list))')),
+            ('false', step4_if_fn_do.rep_mal('(= (list) 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= (list nil) (list))')),
+            ('false', step4_if_fn_do.rep_mal('(= (list) nil)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
     """
-
-    ;; Testing equality and the representation of nil false true
-    (= 1 1)
-    ;=>true
-    (= 0 0)
-    ;=>true
-    (= 1 0)
-    ;=>false
-
-    (= nil nil)
-    ;=>true
-    (= nil false)
-    ;=>false
-    (= nil true)
-    ;=>false
-    (= nil 0)
-    ;=>false
-    (= nil 1)
-    ;=>false
-    (= nil "")
-    ;=>false
-    (= nil ())
-    ;=>false
-    (= nil [])
-    ;=>false
-
-    (= false nil)
-    ;=>false
-    (= false false)
-    ;=>true
-    (= false true)
-    ;=>false
-    (= false 0)
-    ;=>false
-    (= false 1)
-    ;=>false
-    (= false "")
-    ;=>false
-    (= false ())
-    ;=>false
-
-    (= true nil)
-    ;=>false
-    (= true false)
-    ;=>false
-    (= true true)
-    ;=>true
-    (= true 0)
-    ;=>false
-    (= true 1)
-    ;=>false
-    (= true "")
-    ;=>false
-    (= true ())
-    ;=>false
-
-    (= (list) (list))
-    ;=>true
-    (= (list) ())
-    ;=>true
-    (= (list 1 2) (list 1 2))
-    ;=>true
-    (= (list 1) (list))
-    ;=>false
-    (= (list) (list 1))
-    ;=>false
-    (= 0 (list))
-    ;=>false
-    (= (list) 0)
-    ;=>false
-    (= (list nil) (list))
-    ;=>false
-    (= (list) nil)
-    ;=>false
-
     ;; Testing 1-way if form
     (if false (+ 1 7))
     ;=>nil
@@ -178,32 +203,6 @@ class Step4TestCase(unittest.TestCase):
     ;=>7
     (if true (+ 1 7))
     ;=>8
-
-
-    ;; Testing list functions
-    (list)
-    ;=>()
-    (list? (list))
-    ;=>true
-    (list? nil)
-    ;=>false
-    (empty? (list))
-    ;=>true
-    (empty? (list 1))
-    ;=>false
-    (list 1 2 3)
-    ;=>(1 2 3)
-    (count (list 1 2 3))
-    ;=>3
-    (count (list))
-    ;=>0
-    (count nil)
-    ;=>0
-    (if (> (count (list 1 2 3)) 3) 89 78)
-    ;=>78
-    (if (>= (count (list 1 2 3)) 3) 89 78)
-    ;=>89
-
 
     ;; Testing do form
     (do (prn 101))
@@ -226,34 +225,6 @@ class Step4TestCase(unittest.TestCase):
     (def! DO (fn* (a) 7))
     (DO 3)
     ;=>7
-
-    ;; Testing recursive sumdown function
-    (def! sumdown (fn* (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0)))
-    (sumdown 1)
-    ;=>1
-    (sumdown 2)
-    ;=>3
-    (sumdown 6)
-    ;=>21
-
-
-    ;; Testing recursive fibonacci function
-    (def! fib (fn* (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2)))))))
-    (fib 1)
-    ;=>1
-    (fib 2)
-    ;=>2
-    (fib 4)
-    ;=>5
-
-
-    ;; Testing recursive function in environment.
-    (let* (f (fn* () x) x 3) (f))
-    ;=>3
-    (let* (cst (fn* (n) (if (= n 0) nil (cst (- n 1))))) (cst 1))
-    ;=>nil
-    (let* (f (fn* (n) (if (= n 0) 0 (g (- n 1)))) g (fn* (n) (f n))) (f 2))
-    ;=>0
 
 
     ;>>> deferrable=True
