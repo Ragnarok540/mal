@@ -1,4 +1,9 @@
 from mal_types import MalNumber, MalBool, MalNil
+from printer import pr_str
+
+def prn(a):
+    print(pr_str(a, print_readably=True))
+    return MalNil()
 
 ns = {
     '+': lambda a, b: MalNumber(a.val + b.val),
@@ -14,5 +19,6 @@ ns = {
     'list?': lambda a: MalBool(isinstance(a, list)),
     'empty?': lambda a: MalBool(a == []),
     'count': lambda a: MalNumber(len(a)) if isinstance(a, list) else MalNumber(0),
+    'prn': prn,
     'nil': MalNil(),
 }

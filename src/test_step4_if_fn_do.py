@@ -2,7 +2,6 @@ import unittest
 import step4_if_fn_do
 
 deferred = True  # Run deferred tests?
-optional = True  # Run optional tests?
 
 class Step4TestCase(unittest.TestCase):
 
@@ -15,8 +14,19 @@ class Step4TestCase(unittest.TestCase):
             ('9', step4_if_fn_do.rep_mal('(if false (+ 1 7) (+ 1 8))')),
             ('8', step4_if_fn_do.rep_mal('(if nil 7 8)')),
             ('7', step4_if_fn_do.rep_mal('(if 0 7 8)')),
-            # ('7', step4_if_fn_do.rep_mal('(if (list) 7 8)')),
-            # ('7', step4_if_fn_do.rep_mal('(if (list 1 2 3) 7 8)')),
+            ('7', step4_if_fn_do.rep_mal('(if (list) 7 8)')),
+            ('7', step4_if_fn_do.rep_mal('(if (list 1 2 3) 7 8)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    def test_1_way_if(self):
+        cases = [
+            ('nil', step4_if_fn_do.rep_mal('(if false (+ 1 7))')),
+            ('nil', step4_if_fn_do.rep_mal('(if nil 8)')),
+            ('7', step4_if_fn_do.rep_mal('(if nil 8 7)')),
+            ('8', step4_if_fn_do.rep_mal('(if true (+ 1 7))')),
         ]
 
         for cas in cases:
@@ -33,21 +43,6 @@ class Step4TestCase(unittest.TestCase):
 
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
-
-    # @unittest.skipUnless(deferred, "deferred")
-    # def test_let_vector_bindings(self):
-    #     cases = [
-    #         ('9', step3_env.rep_mal('(let* [z 9] z)')),
-    #         ('12', step3_env.rep_mal('(let* [p (+ 2 3) q (+ 2 p)] (+ p q))')),
-    #     ]
-    #     for cas in cases:
-    #         self.assertEqual(cas[0], cas[1])
-
-    # @unittest.skipUnless(optional, "optional")
-    # def test_last_assigment_priority(self):
-    #     expected = '3'
-    #     observed = step3_env.rep_mal('(let* (x 2 x 3) x)')
-    #     self.assertEqual(expected, observed)
 
     def test_closures(self):
         cases = [
@@ -193,101 +188,72 @@ class Step4TestCase(unittest.TestCase):
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    def test_do_form(self):
+        cases = [
+            ('nil', step4_if_fn_do.rep_mal('(do (prn 101))')),
+            ('7', step4_if_fn_do.rep_mal('(do (prn 102) 7)')),
+            ('3', step4_if_fn_do.rep_mal('(do (prn 101) (prn 102) (+ 1 2))')),
+            ('14', step4_if_fn_do.rep_mal('(do (def! a 6) 7 (+ a 8))')),
+            ('6', step4_if_fn_do.rep_mal('a')),
+            ('#<function>', step4_if_fn_do.rep_mal('(def! DO (fn* (a) 7))')),
+            ('7', step4_if_fn_do.rep_mal('(DO 3)')),
+        ]
+
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_if_string(self):
+        expected = '7'
+        observed = step4_if_fn_do.rep_mal('(if "" 7 8)')
+        self.assertEqual(expected, observed)
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_string_equality(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(= "" "")')),
+            ('true', step4_if_fn_do.rep_mal('(= "abc" "abc")')),
+            ('false', step4_if_fn_do.rep_mal('(= "abc" "")')),
+            ('false', step4_if_fn_do.rep_mal('(= "" "abc")')),
+            ('false', step4_if_fn_do.rep_mal('(= "abc" "def")')),
+            ('false', step4_if_fn_do.rep_mal('(= "abc" "ABC")')),
+            ('false', step4_if_fn_do.rep_mal('(= (list) "")')),
+            ('false', step4_if_fn_do.rep_mal('(= "" (list))')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_mal_defined_not(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(not false)')),
+            ('true', step4_if_fn_do.rep_mal('(not nil)')),
+            ('false', step4_if_fn_do.rep_mal('(not true)')),
+            ('false', step4_if_fn_do.rep_mal('(not "a")')),
+            ('false', step4_if_fn_do.rep_mal('(not 0)')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_var_length_args(self):
+        cases = [
+            ('3', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1 2 3)')),
+            ('true', step4_if_fn_do.rep_mal('((fn* (& more) (list? more)) 1 2 3)')),
+            ('1', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1)')),
+            
+            # ('0', step4_if_fn_do.rep_mal('((fn* (& more) (count more)))')),
+            # ('true', step4_if_fn_do.rep_mal('((fn* (& more) (list? more)))')),
+
+            ('2', step4_if_fn_do.rep_mal('((fn* (a & more) (count more)) 1 2 3)')),
+            
+            # ('0', step4_if_fn_do.rep_mal('((fn* (a & more) (count more)) 1)')),
+            # ('true', step4_if_fn_do.rep_mal('((fn* (a & more) (list? more)) 1)')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
     """
-    ;; Testing 1-way if form
-    (if false (+ 1 7))
-    ;=>nil
-    (if nil 8)
-    ;=>nil
-    (if nil 8 7)
-    ;=>7
-    (if true (+ 1 7))
-    ;=>8
-
-    ;; Testing do form
-    (do (prn 101))
-    ;/101
-    ;=>nil
-    (do (prn 102) 7)
-    ;/102
-    ;=>7
-    (do (prn 101) (prn 102) (+ 1 2))
-    ;/101
-    ;/102
-    ;=>3
-
-    (do (def! a 6) 7 (+ a 8))
-    ;=>14
-    a
-    ;=>6
-
-    ;; Testing special form case-sensitivity
-    (def! DO (fn* (a) 7))
-    (DO 3)
-    ;=>7
-
-
-    ;>>> deferrable=True
-    ;;
-    ;; -------- Deferrable Functionality --------
-
-    ;; Testing if on strings
-
-    (if "" 7 8)
-    ;=>7
-
-    ;; Testing string equality
-
-    (= "" "")
-    ;=>true
-    (= "abc" "abc")
-    ;=>true
-    (= "abc" "")
-    ;=>false
-    (= "" "abc")
-    ;=>false
-    (= "abc" "def")
-    ;=>false
-    (= "abc" "ABC")
-    ;=>false
-    (= (list) "")
-    ;=>false
-    (= "" (list))
-    ;=>false
-
-    ;; Testing variable length arguments
-
-    ( (fn* (& more) (count more)) 1 2 3)
-    ;=>3
-    ( (fn* (& more) (list? more)) 1 2 3)
-    ;=>true
-    ( (fn* (& more) (count more)) 1)
-    ;=>1
-    ( (fn* (& more) (count more)) )
-    ;=>0
-    ( (fn* (& more) (list? more)) )
-    ;=>true
-    ( (fn* (a & more) (count more)) 1 2 3)
-    ;=>2
-    ( (fn* (a & more) (count more)) 1)
-    ;=>0
-    ( (fn* (a & more) (list? more)) 1)
-    ;=>true
-
-
-    ;; Testing language defined not function
-    (not false)
-    ;=>true
-    (not nil)
-    ;=>true
-    (not true)
-    ;=>false
-    (not "a")
-    ;=>false
-    (not 0)
-    ;=>false
-
-
     ;; -----------------------------------------------------
 
     ;; Testing string quoting

@@ -87,7 +87,7 @@
 ### do
 ## Core
 ### prn
-### list, list?, empty?, count
+### list, list?, empty? and count
 ### =
 ### <, <=, > and >=
 @endmindmap
