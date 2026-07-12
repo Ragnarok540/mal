@@ -1,14 +1,16 @@
 from typing import Callable
 
-from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalHashMap, MalError
+from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalHashMap, MalError, MalList
 
 def escape(s):
     return s.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
 
 def pr_str(mal, print_readably=False):
     match type(mal).__name__:
-        case list.__name__:
-            res = map(pr_str, mal)
+        case MalList.__name__:
+            def pr_str_read(b):
+                return pr_str(b, print_readably)
+            res = map(pr_str_read, mal.val)
             return '(' + ' '.join(res) + ')'
         case MalVector.__name__:
             res = map(pr_str, mal.val)

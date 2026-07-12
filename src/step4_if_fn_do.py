@@ -2,7 +2,7 @@ from printer import pr_str
 from reader import read_str
 from env import Env
 from core import ns
-from mal_types import MalSymbol, MalVector, MalHashMap, MalError, MalNil,  as_pairs
+from mal_types import MalSymbol, MalVector, MalHashMap, MalError, MalNil, MalList, as_pairs
 
 envi = Env()
 
@@ -31,8 +31,8 @@ def eval_mal(mal, env):
             new_hashmap = MalHashMap()
             new_hashmap.val = [eval_mal(e, env) for e in mal.val]
             return new_hashmap
-        case list.__name__:
-            if len(mal) == 0:
+        case MalList.__name__:
+            if len(mal.val) == 0:
                 return mal
             match str(mal[0]):
                 case 'def!':

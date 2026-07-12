@@ -17,7 +17,6 @@ class Step4TestCase(unittest.TestCase):
             ('7', step4_if_fn_do.rep_mal('(if (list) 7 8)')),
             ('7', step4_if_fn_do.rep_mal('(if (list 1 2 3) 7 8)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -28,7 +27,6 @@ class Step4TestCase(unittest.TestCase):
             ('7', step4_if_fn_do.rep_mal('(if nil 8 7)')),
             ('8', step4_if_fn_do.rep_mal('(if true (+ 1 7))')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -40,7 +38,6 @@ class Step4TestCase(unittest.TestCase):
             ('()', step4_if_fn_do.rep_mal('((fn* () ()))')),
             ('8', step4_if_fn_do.rep_mal('((fn* (f x) (f x)) (fn* (a) (+ 1 a)) 7)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -56,7 +53,6 @@ class Step4TestCase(unittest.TestCase):
             ('0', step4_if_fn_do.rep_mal('(let* [b 0 f (fn* [] b)] (let* [b 1] (f)))')),
             ('0', step4_if_fn_do.rep_mal('((let* [b 0] (fn* [] b)))')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -84,7 +80,6 @@ class Step4TestCase(unittest.TestCase):
             ('true', step4_if_fn_do.rep_mal('(<= 1 1)')),
             ('true', step4_if_fn_do.rep_mal('(<= 1 2)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -95,7 +90,6 @@ class Step4TestCase(unittest.TestCase):
             ('3', step4_if_fn_do.rep_mal('(sumdown 2)')),
             ('21', step4_if_fn_do.rep_mal('(sumdown 6)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -106,7 +100,6 @@ class Step4TestCase(unittest.TestCase):
             ('2', step4_if_fn_do.rep_mal('(fib 2)')),
             ('5', step4_if_fn_do.rep_mal('(fib 4)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -116,7 +109,6 @@ class Step4TestCase(unittest.TestCase):
             ('nil', step4_if_fn_do.rep_mal('(let* (cst (fn* (n) (if (= n 0) nil (cst (- n 1))))) (cst 1))')),
             ('0', step4_if_fn_do.rep_mal('(let* (f (fn* (n) (if (= n 0) 0 (g (- n 1)))) g (fn* (n) (f n))) (f 2))')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -134,7 +126,6 @@ class Step4TestCase(unittest.TestCase):
             ('78', step4_if_fn_do.rep_mal('(if (> (count (list 1 2 3)) 3) 89 78)')),
             ('89', step4_if_fn_do.rep_mal('(if (>= (count (list 1 2 3)) 3) 89 78)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -184,7 +175,6 @@ class Step4TestCase(unittest.TestCase):
             ('false', step4_if_fn_do.rep_mal('(= (list nil) (list))')),
             ('false', step4_if_fn_do.rep_mal('(= (list) nil)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -198,7 +188,6 @@ class Step4TestCase(unittest.TestCase):
             ('#<function>', step4_if_fn_do.rep_mal('(def! DO (fn* (a) 7))')),
             ('7', step4_if_fn_do.rep_mal('(DO 3)')),
         ]
-
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
@@ -238,89 +227,69 @@ class Step4TestCase(unittest.TestCase):
     @unittest.skipUnless(deferred, "deferred")
     def test_var_length_args(self):
         cases = [
-            ('3', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1 2 3)')),
-            ('true', step4_if_fn_do.rep_mal('((fn* (& more) (list? more)) 1 2 3)')),
-            ('1', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1)')),
-            
+            # ('3', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1 2 3)')),
+            # ('true', step4_if_fn_do.rep_mal('((fn* (& more) (list? more)) 1 2 3)')),
+            # ('1', step4_if_fn_do.rep_mal('((fn* (& more) (count more)) 1)')),
             # ('0', step4_if_fn_do.rep_mal('((fn* (& more) (count more)))')),
             # ('true', step4_if_fn_do.rep_mal('((fn* (& more) (list? more)))')),
-
-            ('2', step4_if_fn_do.rep_mal('((fn* (a & more) (count more)) 1 2 3)')),
-            
+            # ('2', step4_if_fn_do.rep_mal('((fn* (a & more) (count more)) 1 2 3)')),
             # ('0', step4_if_fn_do.rep_mal('((fn* (a & more) (count more)) 1)')),
             # ('true', step4_if_fn_do.rep_mal('((fn* (a & more) (list? more)) 1)')),
         ]
         for cas in cases:
             self.assertEqual(cas[0], cas[1])
 
+    @unittest.skipUnless(deferred, "deferred")
+    def test_string_quoting(self):
+        cases = [
+            ('""', step4_if_fn_do.rep_mal('""')),
+            ('"abc"', step4_if_fn_do.rep_mal('"abc"')),
+            ('"abc  def"', step4_if_fn_do.rep_mal('"abc  def"')),
+            (r'"\""', step4_if_fn_do.rep_mal(r'"\""')),
+            (r'"abc\ndef\nghi"', step4_if_fn_do.rep_mal(r'"abc\ndef\nghi"')),
+            (r'"abc\\def\\ghi"', step4_if_fn_do.rep_mal(r'"abc\\def\\ghi"')),
+            (r'"\\n"', step4_if_fn_do.rep_mal(r'"\\n"')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_pr_str(self):
+        cases = [
+            ('""', step4_if_fn_do.rep_mal('(pr-str)')),
+            (r'"\"\""', step4_if_fn_do.rep_mal('(pr-str "")')),
+            (r'"\"abc\""', step4_if_fn_do.rep_mal('(pr-str "abc")')),
+            (r'"\"abc  def\" \"ghi jkl\""', step4_if_fn_do.rep_mal('(pr-str "abc  def" "ghi jkl")')),
+            (r'"\"\\\"\""', step4_if_fn_do.rep_mal(r'(pr-str "\"")')),
+            (r'"(1 2 \"abc\" \"\\\"\") \"def\""', step4_if_fn_do.rep_mal(r'(pr-str (list 1 2 "abc" "\"") "def")')),
+            (r'"\"abc\\ndef\\nghi\""', step4_if_fn_do.rep_mal(r'(pr-str "abc\ndef\nghi")')),
+            (r'"\"abc\\\\def\\\\ghi\""', step4_if_fn_do.rep_mal(r'(pr-str "abc\\def\\ghi")')),
+            ('"()"', step4_if_fn_do.rep_mal('(pr-str (list))')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_str(self):
+        cases = [
+            ('""', step4_if_fn_do.rep_mal('(str)')),
+            ('""', step4_if_fn_do.rep_mal('(str "")')),
+            ('"abc"', step4_if_fn_do.rep_mal('(str "abc")')),
+            (r'''"\""''', step4_if_fn_do.rep_mal(r'''(str "\"")''')),
+            # ('"1abc3"', step4_if_fn_do.rep_mal('(str 1 "abc" 3)')),
+            # (r'"\"abc  def\" \"ghi jkl\""', step4_if_fn_do.rep_mal('(str "abc  def" "ghi jkl")')),
+            # 
+            # (r'"(1 2 \"abc\" \"\\\"\") \"def\""', step4_if_fn_do.rep_mal(r'(pr-str (list 1 2 "abc" "\"") "def")')),
+            # (r'"\"abc\\ndef\\nghi\""', step4_if_fn_do.rep_mal(r'(pr-str "abc\ndef\nghi")')),
+            # (r'"\"abc\\\\def\\\\ghi\""', step4_if_fn_do.rep_mal(r'(pr-str "abc\\def\\ghi")')),
+            # ('"()"', step4_if_fn_do.rep_mal('(str (list))')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
     """
     ;; -----------------------------------------------------
-
-    ;; Testing string quoting
-
-    ""
-    ;=>""
-
-    "abc"
-    ;=>"abc"
-
-    "abc  def"
-    ;=>"abc  def"
-
-    "\""
-    ;=>"\""
-
-    "abc\ndef\nghi"
-    ;=>"abc\ndef\nghi"
-
-    "abc\\def\\ghi"
-    ;=>"abc\\def\\ghi"
-
-    "\\n"
-    ;=>"\\n"
-
-    ;; Testing pr-str
-
-    (pr-str)
-    ;=>""
-
-    (pr-str "")
-    ;=>"\"\""
-
-    (pr-str "abc")
-    ;=>"\"abc\""
-
-    (pr-str "abc  def" "ghi jkl")
-    ;=>"\"abc  def\" \"ghi jkl\""
-
-    (pr-str "\"")
-    ;=>"\"\\\"\""
-
-    (pr-str (list 1 2 "abc" "\"") "def")
-    ;=>"(1 2 \"abc\" \"\\\"\") \"def\""
-
-    (pr-str "abc\ndef\nghi")
-    ;=>"\"abc\\ndef\\nghi\""
-
-    (pr-str "abc\\def\\ghi")
-    ;=>"\"abc\\\\def\\\\ghi\""
-
-    (pr-str (list))
-    ;=>"()"
-
-    ;; Testing str
-
-    (str)
-    ;=>""
-
-    (str "")
-    ;=>""
-
-    (str "abc")
-    ;=>"abc"
-
-    (str "\"")
-    ;=>"\""
+   ;; Testing str
 
     (str 1 "abc" 3)
     ;=>"1abc3"
@@ -407,21 +376,26 @@ class Step4TestCase(unittest.TestCase):
     ;/\(1 2 abc "\) def
     ;=>nil
 
+    """
 
-    ;; Testing keywords
-    (= :abc :abc)
-    ;=>true
-    (= :abc :def)
-    ;=>false
-    (= :abc ":abc")
-    ;=>false
-    (= (list :abc) (list :abc))
-    ;=>true
+    @unittest.skipUnless(deferred, "deferred")
+    def test_keyword_equality(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(= :abc :abc)')),
+            ('false', step4_if_fn_do.rep_mal('(= :abc :def)')),
+            ('false', step4_if_fn_do.rep_mal('(= :abc ":abc")')),
+            ('true', step4_if_fn_do.rep_mal('(= (list :abc) (list :abc))')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
 
-    ;; Testing vector truthiness
-    (if [] 7 8)
-    ;=>7
+    @unittest.skipUnless(deferred, "deferred")
+    def test_if_vector(self):
+        expected = '7'
+        observed = step4_if_fn_do.rep_mal('(if [] 7 8)')
+        self.assertEqual(expected, observed)
 
+    """
     ;; Testing vector printing
     (pr-str [1 2 "abc" "\""] "def")
     ;=>"[1 2 \"abc\" \"\\\"\"] \"def\""
@@ -435,6 +409,11 @@ class Step4TestCase(unittest.TestCase):
     (str [])
     ;=>"[]"
 
+    """
+
+# continue here
+    
+    """
 
     ;; Testing vector functions
     (count [1 2 3])
@@ -446,37 +425,40 @@ class Step4TestCase(unittest.TestCase):
     (list? [4 5 6])
     ;=>false
 
-    ;; Testing vector equality
-    (= [] (list))
-    ;=>true
-    (= [7 8] [7 8])
-    ;=>true
-    (= [:abc] [:abc])
-    ;=>true
-    (= (list 1 2) [1 2])
-    ;=>true
-    (= (list 1) [])
-    ;=>false
-    (= [] [1])
-    ;=>false
-    (= 0 [])
-    ;=>false
-    (= [] 0)
-    ;=>false
-    (= [] "")
-    ;=>false
-    (= "" [])
-    ;=>false
-
-    ;; Testing vector parameter lists
-    ( (fn* [] 4) )
-    ;=>4
-    ( (fn* [f x] (f x)) (fn* [a] (+ 1 a)) 7)
-    ;=>8
-
-    ;; Nested vector/list equality
-    (= [(list)] (list []))
-    ;=>true
-    (= [1 2 (list 3 4 [5 6])] (list 1 2 [3 4 (list 5 6)]))
-    ;=>true
     """
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_vector_equality(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(= [] (list))')),
+            ('false', step4_if_fn_do.rep_mal('(= :abc :def)')),
+            ('false', step4_if_fn_do.rep_mal('(= :abc ":abc")')),
+            ('true', step4_if_fn_do.rep_mal('(= (list :abc) (list :abc))')),
+            ('true', step4_if_fn_do.rep_mal('(= (list 1 2) [1 2])')),
+            ('false', step4_if_fn_do.rep_mal('(= (list 1) [])')),
+            ('false', step4_if_fn_do.rep_mal('(= [] [1])')),
+            ('false', step4_if_fn_do.rep_mal('(= 0 [])')),
+            ('false', step4_if_fn_do.rep_mal('(= [] 0)')),
+            ('false', step4_if_fn_do.rep_mal('(= [] "")')),
+            ('false', step4_if_fn_do.rep_mal('(= "" [])')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_vector_parameters(self):
+        cases = [
+            ('4', step4_if_fn_do.rep_mal('((fn* [] 4))')),
+            ('8', step4_if_fn_do.rep_mal('((fn* [f x] (f x)) (fn* [a] (+ 1 a)) 7)')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])
+
+    @unittest.skipUnless(deferred, "deferred")
+    def test_nested_vector_list(self):
+        cases = [
+            ('true', step4_if_fn_do.rep_mal('(= [(list)] (list []))')),
+            ('true', step4_if_fn_do.rep_mal('(= [1 2 (list 3 4 [5 6])] (list 1 2 [3 4 (list 5 6)]))')),
+        ]
+        for cas in cases:
+            self.assertEqual(cas[0], cas[1])

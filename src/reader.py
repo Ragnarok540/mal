@@ -1,6 +1,6 @@
 import re
 
-from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError
+from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError, MalList
 
 class Reader:
     def __init__(self, tokens):
@@ -46,13 +46,13 @@ def read_form(reader):
 
 def read_list(reader):
     token = reader.next()
-    result = []
+    result = MalList()
     while True:
         token = reader.peek()
         if is_list_end(token):
             reader.next()
             break
-        result.append(read_form(reader))
+        result.val.append(read_form(reader))
     return result
 
 def read_vector(reader):
