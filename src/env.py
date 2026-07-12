@@ -1,17 +1,19 @@
+from mal_types import MalList
+
 class Env():
     def __init__(self, outer=None, binds=None, exprs=None):
         self.outer = outer
         self.data = {}
         if binds:
             binds = [b.val for b in binds]
-            binds_len = len(binds)
-            if '&' in binds and '&' == binds[-2]:
-                start = list(exprs[:binds_len - 2])
-                start.append(list(exprs[binds.index('&'):]))
-                exprs = start
-                binds.remove('&')
-            for k, v in zip(binds, exprs):
-                self.set(k, v)
+            exprs_it = iter(exprs)
+            for i, bind in enumerate(binds):
+                if bind == '&':
+                    ml = MalList()
+                    ml.val = list(exprs_it)
+                    self.data[binds[i + 1]] = ml
+                    break
+                self.data[bind] = next(exprs_it)
 
     def set(self, key, value):
         self.data[key] = value

@@ -69,9 +69,6 @@ class MalNil(MalType):
     def __str__(self):
         return 'nil'
 
-    # def __len__(self):
-    #     return 0
-
 def as_pairs(iterable):
     """ k0, v0, k1, v1 ...  ->  (k0, v0), (k1, v1) ... """
     it = iter(iterable)

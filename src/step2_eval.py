@@ -22,7 +22,7 @@ def eval_mal(mal, repl_env):
             new_hashmap.val = [eval_mal(e, repl_env) for e in mal.val]
             return new_hashmap
         case MalList.__name__:
-            if len(mal.val) == 0:
+            if len(mal) == 0:
                 return mal
             f = eval_mal(mal[0], repl_env)
             args = mal[1:]

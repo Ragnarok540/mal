@@ -33,7 +33,7 @@ def eval_mal(mal, env):
             new_hashmap.val = [eval_mal(e, env) for e in mal.val]
             return new_hashmap
         case MalList.__name__:
-            if len(mal.val) == 0:
+            if len(mal) == 0:
                 return mal
             match str(mal[0]):
                 case 'def!':
