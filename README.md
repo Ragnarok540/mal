@@ -77,7 +77,7 @@
 
 ```plantuml
 @startmindmap
-# Step 4: If Fn Do 
+# Step 4: If Fn Do
 ## Env
 ### binds
 ### exprs
@@ -90,5 +90,17 @@
 ### list, list?, empty? and count
 ### =
 ### <, <=, > and >=
+@endmindmap
+```
+
+```plantuml
+@startmindmap
+# Step 5: Tail call optimization
+## Special Symbols
+### let*
+### if
+### do
+### fn*
+## MalFunction
 @endmindmap
 ```

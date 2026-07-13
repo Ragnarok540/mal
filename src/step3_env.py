@@ -1,6 +1,7 @@
 from printer import pr_str
 from reader import read_str
 from env import Env
+from error import SymbolNotFound
 from mal_types import MalNumber, MalSymbol, MalVector, MalHashMap, MalNil, MalError, MalList, as_pairs
 
 envi = Env()
@@ -57,9 +58,6 @@ def rep_mal(string):
         return print_mal(eval_mal(read_mal(string), envi))
     except SymbolNotFound as snf:
         return print_mal(MalError(snf))
-
-class SymbolNotFound(Exception):
-    pass
 
 if __name__ == "__main__":
     while True:

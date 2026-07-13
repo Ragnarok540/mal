@@ -1,5 +1,6 @@
 import re
 
+from error import UnbalancedError
 from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalHashMap, MalError, MalList
 
 class Reader:
@@ -42,7 +43,6 @@ def read_form(reader):
         reader.next()
         read_form(reader)
     return read_atom(reader)
-
 
 def read_list(reader):
     token = reader.next()
@@ -141,6 +141,3 @@ def is_hashmap_end(token):
         return token[0] == '}'
     except IndexError as ie:
         raise UnbalancedError() from ie
-
-class UnbalancedError(Exception):
-    pass

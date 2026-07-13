@@ -1,6 +1,7 @@
 from printer import pr_str
 from reader import read_str
 from env import Env
+from error import SymbolNotFound
 from core import ns
 from mal_types import MalSymbol, MalVector, MalHashMap, MalError, MalNil, MalList, as_pairs
 
@@ -75,9 +76,6 @@ def rep_mal(string):
         return print_mal(MalError(snf))
 
 rep_mal("(def! not (fn* (a) (if a false true)))")
-
-class SymbolNotFound(Exception):
-    pass
 
 if __name__ == "__main__":
     while True:
