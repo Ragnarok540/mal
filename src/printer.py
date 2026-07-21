@@ -1,32 +1,25 @@
-from typing import Callable
-
 from mal_types import MalNumber, MalBool, MalString, MalSymbol, MalKeyword, MalVector, MalNil, MalHashMap, MalError, MalList
 
 def escape(s):
     return s.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
 
-def pr_str(mal, print_readably=False):
+def pr_str(mal, print_readably=True):
     match type(mal).__name__:
         case MalList.__name__:
-            def pr_str_read(b):
-                return pr_str(b, print_readably)
-            res = map(pr_str_read, mal.val)
-            return '(' + ' '.join(res) + ')'
+            return '(' + pr_list(mal, ' ', print_readably) + ')'
         case MalVector.__name__:
-            res = map(pr_str, mal.val)
-            return '[' + ' '.join(res) + ']'
+            return '[' + pr_list(mal, ' ', print_readably)  + ']'
         case MalHashMap.__name__:
-            res = map(pr_str, mal.val)
-            return '{' + ' '.join(res) + '}'
+            return '{' + pr_list(mal, ' ', print_readably)  + '}'
         case MalNumber.__name__:
             return str(mal.val)
         case MalBool.__name__:
             return str(mal)
         case MalString.__name__:
-            val = str(mal.val)
             if print_readably:
-                return escape(val)
-            return val
+                # return '"' + escape(mal.val) + '"'
+                return mal.val
+            return mal.val
         case MalKeyword.__name__:
             return str(mal.val)
         case MalSymbol.__name__:
@@ -37,3 +30,8 @@ def pr_str(mal, print_readably=False):
             return str(mal.val)
         case 'function':
             return '#<function>'
+        case _:
+            return str(mal)
+
+def pr_list(mal, separator, print_readably):
+    return separator.join(pr_str(exp, print_readably) for exp in mal)

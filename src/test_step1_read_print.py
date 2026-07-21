@@ -227,12 +227,12 @@ class Step1TestCase(unittest.TestCase):
     @unittest.skipUnless(optional, "optional")
     def test_non_alphanum_chars_strings(self):
         cases = [
-            (r'''"\n"''', step1_read_print.rep_mal(r'''"\n"''')),
+            (r'"\n"', step1_read_print.rep_mal(r'"\n"')),
             ('"#"', step1_read_print.rep_mal('"#"')),
             ('"$"', step1_read_print.rep_mal('"$"')),
             ('"%"', step1_read_print.rep_mal('"%"')),
             ('"."', step1_read_print.rep_mal('"."')),
-            (r'''"\\"''', step1_read_print.rep_mal(r'''"\\"''')),
+            (r'"\\"', step1_read_print.rep_mal(r'"\\"')),
             ('"|"', step1_read_print.rep_mal('"|"')),
         ]
         for cas in cases:

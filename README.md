@@ -101,6 +101,7 @@
 ### if
 ### do
 ### fn*
-## MalFunction
+## Data Types
+### Function
 @endmindmap
 ```

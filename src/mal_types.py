@@ -38,12 +38,12 @@ class MalContainer(MalType):
     def __len__(self):
         return len(self.val)
 
+    def __iter__(self):
+        return iter(self.val)
+
 class MalList(MalContainer):
     def __init__(self):
         super().__init__()
-
-    def __iter__(self):
-        return iter(self.val)
 
     def __setitem__(self, key, value):
         self.val[key] = value
@@ -54,9 +54,6 @@ class MalList(MalContainer):
 class MalVector(MalContainer):
     def __init__(self):
         super().__init__()
-
-    def __iter__(self):
-        return iter(self.val)
 
 class MalHashMap(MalContainer):
     def __init__(self):

@@ -1,5 +1,5 @@
 from mal_types import MalNumber, MalString, MalBool, MalNil, MalList, MalContainer
-from printer import pr_str
+from printer import pr_str, pr_list
 from reader import is_string
 
 def fn_equals(a, b):
@@ -19,20 +19,19 @@ def fn_count(a):
         return MalNumber(len(a))
     return MalNumber(0)
 
-def fn_prn(a):
-    print(pr_str(a, print_readably=True))
+def fn_prn(*args):
+    print(pr_list(args, ' ', True))
     return MalNil()
 
-def fn_pr_str(*a):
-    def pr_str_read(b):
-        return pr_str(b, print_readably=True)
-    res = map(pr_str_read, a)
-    return MalString('"' + ' '.join(res) + '"')
+def fn_println(*args):
+    print(pr_list(args, ' ', False))
+    return MalNil()
+
+def fn_pr_str(*args):
+    return pr_list(args, ' ', True)
 
 def fn_str(*args):
-    res = [pr_str(a) for a in args]
-    res = [a[1:-1] if is_string(a) else a for a in res]
-    return MalString('"' + ''.join(res) + '"')
+    return pr_list(args, '', False)
 
 ns = {
     '+': lambda a, b: MalNumber(a.val + b.val),
@@ -52,6 +51,7 @@ ns = {
     'count': fn_count,
 
     'prn': fn_prn,
+    'println': fn_println,
     'pr-str': fn_pr_str,
     'str': fn_str,
 
